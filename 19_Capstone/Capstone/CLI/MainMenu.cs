@@ -24,6 +24,7 @@ namespace Capstone.CLI
         {
             
 
+
             // Add Sample menu options
             AddOption("(1): Display Vending Machine items", DisplayItems, "1");
             AddOption(" (2): Purchase", Whatever, "2");
@@ -50,7 +51,7 @@ namespace Capstone.CLI
             foreach(KeyValuePair<string, VendingMachineItems> kvp in ourVendingMachine.TotalInventoryList)
             {
 
-                Console.WriteLine($"{kvp.Key}");// This is where we left off! 
+                Console.WriteLine($"{kvp.Key} {kvp.Value.ProductType}     Remaining Quanity:{kvp.Value.StockCount} \t {kvp.Value.Name} {kvp.Value.Price} ");// This is where we left off!    
                 
                 
             }
@@ -74,13 +75,13 @@ namespace Capstone.CLI
             Console.WriteLine($"Hello, {name}!");
             return MenuOptionResult.WaitAfterMenuSelection;
         }
-
-        private MenuOptionResult Whatever()
+        
+        public MenuOptionResult Whatever()
         {
             PurchaseMenu purchaseMenu = new PurchaseMenu();
-            
+            purchaseMenu.ourVendingMachine = this.ourVendingMachine;
             purchaseMenu.Show();
-            Console.WriteLine($"Current Money Provided: {purchaseMenu.randomVendingMachine.Balance}");
+            Console.WriteLine($"Current Money Provided: {ourVendingMachine.Balance}");
 
             return MenuOptionResult.WaitAfterMenuSelection;
         }

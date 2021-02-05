@@ -7,17 +7,33 @@ using Capstone.classes;
 namespace Capstone.CLI
 {
 
-    public class PurchaseMenu : ConsoleMenu
+    public class PurchaseMenu : ConsoleMenu 
     {
-        public VendingMachine randomVendingMachine = new VendingMachine();
+        public VendingMachine ourVendingMachine { get;  set; }
+
+        public MenuOptionResult CurrentMoneyProvided()
+        {
+            decimal moneyEntered = GetDecimal("How much money would you want to add into the machine? ($1, $2, $5, $10");
+            
+            ourVendingMachine.CurrentMoneyProvided(moneyEntered);
+
+            return MenuOptionResult.DoNotWaitAfterMenuSelection;
+            
+        }
+
+        protected override void OnAfterShow()
+        {
+            Console.WriteLine($"This is your current balance {ourVendingMachine.Balance}");
+        }
+        //public VendingMachine randomVendingMachine = new VendingMachine();
         public PurchaseMenu()
         {
 
-            AddOption("Feed Money", randomVendingMachine.CurrentMoneyProvided, "1");
-            AddOption("Select Product", randomVendingMachine.CheckIfItemIsAvailable, "2");
+            AddOption("Feed Money", CurrentMoneyProvided, "1");
+          //FIX   AddOption("Select Product", CheckIfItemIsAvailable, "2");
             AddOption("Finish Transaction", Close, "3");
 
-            AddOption($"Current Money Provided: {randomVendingMachine.Balance}", Whatever222, "4"); // to make current money provided an option and u click it and it displays the curent money balance
+        //    AddOption($"Current Money Provided: {ourVendingMachine.Balance}", Whatever222, "4"); // to make current money provided an option and u click it and it displays the curent money balance
 
             Configure(cfg =>
             {
@@ -33,7 +49,7 @@ namespace Capstone.CLI
             MenuOptionResult Whatever222()
             {
 
-                Console.WriteLine($"Current Money Provided: {randomVendingMachine.Balance}");
+                Console.WriteLine($"Current Money Provided: {ourVendingMachine.Balance}");
 
                 return MenuOptionResult.WaitAfterMenuSelection;
             }
@@ -83,7 +99,6 @@ namespace Capstone.CLI
 
         }
 
-
-
+       
     }
 }

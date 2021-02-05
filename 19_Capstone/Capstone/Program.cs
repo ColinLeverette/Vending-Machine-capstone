@@ -29,7 +29,7 @@ namespace Capstone
             mainMenu.ourVendingMachine.ReadFile();
 
             mainMenu.Show();
-            PurchaseMenu purchaseMenu = new PurchaseMenu();
+            //PurchaseMenu purchaseMenu = new PurchaseMenu();
             
             //purchaseMenu.Show();
 

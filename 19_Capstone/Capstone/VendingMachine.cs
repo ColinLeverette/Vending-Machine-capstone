@@ -8,7 +8,7 @@ using MenuFramework;
 
 namespace Capstone
 {
-
+    
     public class VendingMachine
     {
         public decimal Balance { get; set; }
@@ -17,19 +17,15 @@ namespace Capstone
 
         public Dictionary<string, VendingMachineItems> TotalInventoryList = new Dictionary<string, VendingMachineItems>();
 
+
         
 
 
-
-        public MenuOptionResult CurrentMoneyProvided()
+        public void CurrentMoneyProvided(decimal moneyEntered)
         {
-            Console.WriteLine("How much money would you want to add into the machine? ($1, $2, $5, $10");
-            Balance = 0;
-            decimal userInsertedMoney = decimal.Parse(Console.ReadLine());
+          
+            Balance = moneyEntered + Balance;
 
-            Balance = userInsertedMoney + Balance;
-
-            return (MenuOptionResult)Balance;
         }
 
         public MenuOptionResult CheckIfItemIsAvailable()
@@ -98,20 +94,33 @@ namespace Capstone
 
 
                     //VendingMachineItems item = new VendingMachineItems(productName, itemPrice, 5, slotId);
-                    VendingMachineItems item = new VendingMachineItems(lineSplit[1], decimal.Parse(lineSplit[2]), 5, lineSplit[0]);
+                    VendingMachineItems item = new VendingMachineItems();
+
+                    
+                    item.Name = lineSplit[1];
+                    item.Price = decimal.Parse(lineSplit[2]);
+                    item.SlotId = lineSplit[0];
+                    item.ProductType = lineSplit[3];
+                    item.StockCount = 5;
+
+
+
+
+
+                    //(lineSplit[1], decimal.Parse(lineSplit[2]), 5, lineSplit[0], lineSplit[3])
                     TotalInventoryList.Add(lineSplit[0], item);
 
-                     
-                        //A1 | Potato Crisps | 3.05 | Chip
-                        //B1 | Moonpie | 1.80 | Candy
-                        //B2 | Cowtales | 1.50 | Candy
-                        //C1 | Cola | 1.25 | Drink
 
-                }
+                //A1 | Potato Crisps | 3.05 | Chip
+                //B1 | Moonpie | 1.80 | Candy
+                //B2 | Cowtales | 1.50 | Candy
+                //C1 | Cola | 1.25 | Drink
+
             }
         }
-
     }
+
+}
 
 }
 
