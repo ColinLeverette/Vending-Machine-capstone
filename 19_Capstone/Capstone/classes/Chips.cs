@@ -2,27 +2,27 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Capstone.classes
-{
-    public class Chips : VendingMachineItems
-    {
+//namespace Capstone.classes
+//{
+//    public class Chips : VendingMachineItems
+//    {
 
-        public string ChipsPurchaseMessage { get; set; }
+//        public string ChipsPurchaseMessage { get; set; }
 
-        public Chips(string name, decimal price, int stockCount, string slotId, string purchaseMessage) : base(name, price, stockCount, slotId, purchaseMessage)
-        {
+//        public Chips(string name, decimal price, int stockCount, string slotId, string purchaseMessage) : base(name, price, stockCount, slotId)
+//        {
 
-            ChipsPurchaseMessage = purchaseMessage;
+//            ChipsPurchaseMessage = purchaseMessage;
 
-        }
-
-
+//        }
 
 
-        public override string PrintPurchaseMessage()
-        {
-            return ChipsPurchaseMessage = "Crunch Crunch, Yum!";
 
-        }
-    }
-}
+
+//        public override string PrintPurchaseMessage()
+//        {
+//            return ChipsPurchaseMessage = "Crunch Crunch, Yum!";
+
+//        }
+//    }
+//}

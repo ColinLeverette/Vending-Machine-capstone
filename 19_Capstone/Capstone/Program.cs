@@ -1,9 +1,10 @@
 ﻿using Capstone.CLI;
 using System;
 
+
 namespace Capstone
 {
-    class Program
+    public class Program
     {
         /****************************************************************************************
          * Notes on this Capstone solution:
@@ -24,7 +25,14 @@ namespace Capstone
             // Some objects could be passed into the menu constructor, so that the menu has something to 
             // perform its actions against....
             MainMenu mainMenu = new MainMenu();
+
+            mainMenu.ourVendingMachine.ReadFile();
+
             mainMenu.Show();
+            PurchaseMenu purchaseMenu = new PurchaseMenu();
+            
+            //purchaseMenu.Show();
+
         }
     }
 }
