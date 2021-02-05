@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using MenuFramework;
-
+using Capstone.CLI;
 
 namespace Capstone
 {
@@ -81,7 +81,7 @@ namespace Capstone
         //        Console.WriteLine(quarterCount);
         //        Console.WriteLine(dimeCount);
         //        Console.WriteLine(nickelCount);
-                
+
 
 
         //    }
@@ -107,30 +107,64 @@ namespace Capstone
             // subtracts however many are bought from the defualt stock
             //Console.WriteLine("What would you like to purchase? (ex: A1, C3, B1) ");
             //string userPurchaseChoice = Console.ReadLine();
-
+            PurchaseMenu purchaseMenu = new PurchaseMenu();
             foreach (KeyValuePair<string, VendingMachineItems> kvp in TotalInventoryList)
             {
 
-                if (kvp.Key.Contains(userCodeEntered.ToUpper()))
+                if (kvp.Key.Contains(userCodeEntered.ToUpper()) == false)
                 {
-                    if (kvp.Value.StockCount >= 1 && Balance >= kvp.Value.Price)
+                    purchaseMenu.WrongSlotIdEnteredError();
+                    return MenuOptionResult.WaitAfterMenuSelection;
+                }
+                else if (kvp.Key.Contains(userCodeEntered.ToUpper()) && (kvp.Value.StockCount >= 1 && Balance >= kvp.Value.Price))
+                {
+                    
+                    kvp.Value.StockCount -= 1;
+                    Balance = Balance - kvp.Value.Price;
+                    if (kvp.Value.ProductType == "Gum")
                     {
-                        kvp.Value.StockCount -= 1;
-                        Balance = Balance - kvp.Value.Price;
-                        //Take them back to the purchase menu
-
+                        purchaseMenu.GumPurchaseMessage();
+                    }
+                    if (kvp.Value.ProductType == "Drink")
+                    {
+                        purchaseMenu.DrinkPurchaseMessage();
+                    }
+                    if (kvp.Value.ProductType == "Candy")
+                    {
+                        purchaseMenu.CandyPurchaseMessage();
+                    }
+                    if (kvp.Value.ProductType == "Chip")
+                    {
+                        purchaseMenu.ChipsPurchaseMessage();
                     }
 
-
-                    //if money provided is greater than the price (DONE)
-                    //balance decreases (DONE)
-
+                    //Take them back to the purchase menu
+                    return MenuOptionResult.WaitAfterMenuSelection;
                 }
-                //ErrorWrongChoiceMethod(userCodeEntered);
+                else if (kvp.Value.StockCount < 1)
+                {
+                    purchaseMenu.NotEnoughStock();
+                    return MenuOptionResult.WaitAfterMenuSelection;
+                }
+
+                
+
+
+
+
+
+
+
+                //if money provided is greater than the price (DONE)
+                //balance decreases (DONE)
 
             }
+            //ErrorWrongChoiceMethod(userCodeEntered);
             return MenuOptionResult.WaitAfterMenuSelection;
         }
+
+
+
 
         public void ReadFile()
         {
@@ -172,8 +206,8 @@ namespace Capstone
         }
 
     }
-
 }
+
 
 
 

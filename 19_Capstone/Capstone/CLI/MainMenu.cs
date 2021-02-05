@@ -50,7 +50,7 @@ namespace Capstone.CLI
         }
 
         //string name, decimal price, int stockCount, string slotId
-        private MenuOptionResult DisplayItems()
+        public MenuOptionResult DisplayItems()
         {
             foreach (KeyValuePair<string, VendingMachineItems> kvp in ourVendingMachine.TotalInventoryList)
             {

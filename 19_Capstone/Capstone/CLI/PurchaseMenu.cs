@@ -32,18 +32,49 @@ namespace Capstone.CLI
         {
             //Each slot has a starting stock of 5
             // subtracts however many are bought from the defualt stock
-            
+            foreach (KeyValuePair<string, VendingMachineItems> kvp in ourVendingMachine.TotalInventoryList)
+            {
+                Console.WriteLine($"{kvp.Key} {kvp.Value.ProductType}     Remaining Quantity:{kvp.Value.StockCount} \t {kvp.Value.Name} {kvp.Value.Price} ");// This is where we left off!                   
+            }
             string userPurchaseChoice = GetString("What would you like to purchase ? (ex: A1, C3, B1) ");
 
             ourVendingMachine.UserItemChoice(userPurchaseChoice);
-            
-            return MenuOptionResult.DoNotWaitAfterMenuSelection;
+           
+            //return MenuOptionResult.WaitAfterMenuSelection;
+            return MenuOptionResult.WaitAfterMenuSelection;
 
             //TODO Maybe put in wrong choice error message that prints out
             //TODO if someone tries purchasing something and they dont have enough money, put a message (TRYING TO STEAL FOOD)
 
         }
 
+        public void GumPurchaseMessage()
+        {
+            Console.WriteLine("Chew Chew, Yum");
+        }
+
+        public void CandyPurchaseMessage()
+        {
+            Console.WriteLine("Munch Munch, Yum");
+        }
+
+        public void DrinkPurchaseMessage()
+        {
+            Console.WriteLine("Glug Glug, Yum");
+        }
+        public void ChipsPurchaseMessage()
+        {
+            Console.WriteLine("Crunch Crunch, Yum");
+        }
+        public void NotEnoughStock()
+        {
+            Console.WriteLine("Error: Sold out!");
+        }
+
+        public void WrongSlotIdEnteredError()
+        {
+            Console.WriteLine("Error: Unknown slotID entered, you will be returned to the purchase menu");
+        }
         public void DollarAmountErrorMessage()
         {
             Console.WriteLine("Please enter a valid dollar amount ($1, $5, $10, $20)");

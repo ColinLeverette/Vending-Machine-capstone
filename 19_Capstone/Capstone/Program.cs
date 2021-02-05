@@ -27,7 +27,7 @@ namespace Capstone
             MainMenu mainMenu = new MainMenu();
 
             mainMenu.ourVendingMachine.ReadFile();
-
+            
             mainMenu.Show();
             //PurchaseMenu purchaseMenu = new PurchaseMenu();
             
