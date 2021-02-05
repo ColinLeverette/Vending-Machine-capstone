@@ -10,15 +10,43 @@ namespace Capstone.CLI
     public class PurchaseMenu : ConsoleMenu 
     {
         public VendingMachine ourVendingMachine { get;  set; }
+        public Dictionary<string, VendingMachineItems> TotalInventoryList { get; set; }
 
         public MenuOptionResult CurrentMoneyProvided()
         {
-            decimal moneyEntered = GetDecimal("How much money would you want to add into the machine? ($1, $2, $5, $10");
-            
-            ourVendingMachine.CurrentMoneyProvided(moneyEntered);
 
-            return MenuOptionResult.DoNotWaitAfterMenuSelection;
+            while (true)
+            {
+                decimal moneyEntered = GetDecimal("How much money would you want to add into the machine? ($1, $5, $10, $20)");
+
+                while (moneyEntered == 1 || moneyEntered == 5 || moneyEntered == 10 || moneyEntered == 20)
+                {
+                    ourVendingMachine.CurrentMoneyProvided(moneyEntered);
+                    return MenuOptionResult.DoNotWaitAfterMenuSelection;
+                }
+                DollarAmountErrorMessage();
+            }
+        }
+
+        public MenuOptionResult UserItemChoice()
+        {
+            //Each slot has a starting stock of 5
+            // subtracts however many are bought from the defualt stock
             
+            string userPurchaseChoice = GetString("What would you like to purchase ? (ex: A1, C3, B1) ");
+
+            ourVendingMachine.UserItemChoice(userPurchaseChoice);
+            
+            return MenuOptionResult.DoNotWaitAfterMenuSelection;
+
+            //TODO Maybe put in wrong choice error message that prints out
+            //TODO if someone tries purchasing something and they dont have enough money, put a message (TRYING TO STEAL FOOD)
+
+        }
+
+        public void DollarAmountErrorMessage()
+        {
+            Console.WriteLine("Please enter a valid dollar amount ($1, $5, $10, $20)");
         }
 
         protected override void OnAfterShow()
@@ -30,7 +58,7 @@ namespace Capstone.CLI
         {
 
             AddOption("Feed Money", CurrentMoneyProvided, "1");
-          //FIX   AddOption("Select Product", CheckIfItemIsAvailable, "2");
+            AddOption("Select Product", UserItemChoice, "2");
             AddOption("Finish Transaction", Close, "3");
 
         //    AddOption($"Current Money Provided: {ourVendingMachine.Balance}", Whatever222, "4"); // to make current money provided an option and u click it and it displays the curent money balance
@@ -42,60 +70,16 @@ namespace Capstone.CLI
                 cfg.KeyStringTextSeparator = ": ";
                 cfg.Title = "Purchase Menu";
             });
+       
 
-            //methods 
-            //randomVendingMachine.CurrentMoneyProvided();
-
-            MenuOptionResult Whatever222()
-            {
-
-                Console.WriteLine($"Current Money Provided: {ourVendingMachine.Balance}");
-
-                return MenuOptionResult.WaitAfterMenuSelection;
-            }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            //private MenuOptionResult ProductOption()
+            //MenuOptionResult Whatever222()
             //{
 
-            //AddOption("Feed Money", Close, "1");
-            //AddOption("Select Product", Close, "2");
-            //AddOption("Finish Transaction", Close, "3");
+            //    Console.WriteLine($"Current Money Provided: {ourVendingMachine.Balance}");
 
-            //Console.WriteLine("What would you like to purchase? (ex: A1, C3, B1) ");
-            //string userPurchaseChoice = Console.ReadLine();
-
-            //foreach (KeyValuePair<string, VendingMachineItems> kvp in TotalInventoryList )
-            //{
-
+            //    return MenuOptionResult.WaitAfterMenuSelection;
             //}
-
-            //if (TotalInventoryList.ContainsKey(userPurchaseChoice))
-            //{
-
-            // }
-
-            //string name = GetString("What is your name? ");
-            //Console.WriteLine($"Hello, {name}!");
-            //return MenuOptionResult.WaitAfterMenuSelection;
-            //}
-
+            
 
         }
 
