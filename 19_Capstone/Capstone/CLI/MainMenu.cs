@@ -27,9 +27,9 @@ namespace Capstone.CLI
         public MainMenu()
         {
             // Add Sample menu options
-            AddOption("(1): Display Vending Machine items", DisplayItems, "1");
-            AddOption(" (2): Purchase", ExitStatement, "2");
-            AddOption("(3): Exit", Close, "3");
+            AddOption("Display Vending Machine items", DisplayItems, "1");
+            AddOption("Purchase", ExitStatement, "2");
+            AddOption("Exit", Close, "3");
 
             Configure(cfg =>
            {
@@ -51,15 +51,8 @@ namespace Capstone.CLI
         {
             foreach (KeyValuePair<string, VendingMachineItems> kvp in ourVendingMachine.TotalInventoryList)
             {
-                Console.WriteLine($"{kvp.Key} {kvp.Value.ProductType}     Remaining Quantity:{kvp.Value.StockCount} \t {kvp.Value.Name} {kvp.Value.Price} ");// This is where we left off!                   
+                Console.WriteLine($"{kvp.Key} {kvp.Value.ProductType}     Remaining Quantity:   {kvp.Value.StockCount} \t {kvp.Value.Name} ${kvp.Value.Price} ");// This is where we left off!                   
             }
-            return MenuOptionResult.WaitAfterMenuSelection;
-        }
-
-        private MenuOptionResult Greeting()
-        {
-            string name = GetString("What is your name? ");
-            Console.WriteLine($"Hello, {name}!");
             return MenuOptionResult.WaitAfterMenuSelection;
         }
 
@@ -68,12 +61,14 @@ namespace Capstone.CLI
             PurchaseMenu purchaseMenu = new PurchaseMenu();
             purchaseMenu.ourVendingMachine = this.ourVendingMachine;
             purchaseMenu.Show();
-            Console.WriteLine($"Here's your Change Amount: {ourVendingMachine.Balance}");        
+            Console.WriteLine($"Here's your Change Amount: ${ourVendingMachine.Balance}");
+
+            ourVendingMachine.AuditLogGiveChangeMethod("GIVE CHANGE:", ourVendingMachine.Balance, 0);
 
             decimal twentyDollarBill = 20M;
             decimal tenDollarBill = 10M;
             decimal fiveDollarBill = 5M;
-            decimal oneDollarBill = 1M;
+            decimal oneDollarBill = 1M; 
             decimal quarter = 0.25M;
             decimal dime = 0.10M;
             decimal nickel = 0.05M;
@@ -85,7 +80,6 @@ namespace Capstone.CLI
             int quarterCount = 0;
             int dimeCount = 0;
             int nickelCount = 0;
-
 
             for (decimal i = 0M; i >= 0; i++)
             {

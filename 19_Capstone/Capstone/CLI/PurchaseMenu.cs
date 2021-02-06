@@ -12,17 +12,20 @@ namespace Capstone.CLI
         public VendingMachine ourVendingMachine { get; set; }
         public Dictionary<string, VendingMachineItems> TotalInventoryList { get; set; }
 
-        public MenuOptionResult CurrentMoneyProvided()
+        public MenuOptionResult FeedMoneyMethod()
         {
 
             while (true)
             {
                 decimal moneyEntered = GetDecimal("How much money would you want to add into the machine? ($1, $5, $10, $20)");
-
+                
                 while (moneyEntered == 1 || moneyEntered == 5 || moneyEntered == 10 || moneyEntered == 20)
                 {
+                    
+                    ourVendingMachine.AuditLogFeedMoney("FEED MONEY:", ourVendingMachine.Balance, ourVendingMachine.RunningBalanceMethod(moneyEntered));
                     ourVendingMachine.CurrentMoneyProvided(moneyEntered);
-                    ourVendingMachine.AuditLog("Feed Money", moneyEntered);
+                    
+                    // blaance and balance + money entered
                     return MenuOptionResult.DoNotWaitAfterMenuSelection;
                 }
                 DollarAmountErrorMessage();
@@ -36,7 +39,7 @@ namespace Capstone.CLI
             // subtracts however many are bought from the defualt stock
             foreach (KeyValuePair<string, VendingMachineItems> kvp in ourVendingMachine.TotalInventoryList)
             {
-                Console.WriteLine($"{kvp.Key} {kvp.Value.ProductType}     Remaining Quantity:{kvp.Value.StockCount} \t {kvp.Value.Name} {kvp.Value.Price} ");// This is where we left off!                   
+                Console.WriteLine($"{kvp.Key} {kvp.Value.ProductType}     Quantity Remaining:   {kvp.Value.StockCount} \t {kvp.Value.Name} ${kvp.Value.Price} ");                
             }
             string userPurchaseChoice = GetString("What would you like to purchase ? (ex: A1, C3, B1) ");
 
@@ -90,13 +93,13 @@ namespace Capstone.CLI
 
         protected override void OnAfterShow()
         {
-            Console.WriteLine($"This is your current balance {ourVendingMachine.Balance}");
+            Console.WriteLine($"This is your current balance ${ourVendingMachine.Balance}");
         }
 
         public PurchaseMenu()
         {
 
-            AddOption("Feed Money", CurrentMoneyProvided, "1");
+            AddOption("Feed Money", FeedMoneyMethod, "1");
             AddOption("Select Product", UserItemChoice, "2");
             AddOption("Finish Transaction", Close, "3");
 
@@ -116,15 +119,18 @@ namespace Capstone.CLI
             if (type == "Gum")
             {
                 Console.WriteLine($"Item Name: {name}");
-                Console.WriteLine($"Item Price: {price}");
+                Console.WriteLine($"Item Price: ${price}");
                 Console.WriteLine($"Remaining Balance: ${otherNumber}");
 
                 GumPurchaseMessage();
+
+                //
+                
             }
             else if (type == "Drink")
             {
                 Console.WriteLine($"Item Name: {name}");
-                Console.WriteLine($"Item Price: {price}");
+                Console.WriteLine($"Item Price: ${price}");
                 Console.WriteLine($"Remaining Balance: ${otherNumber}");
 
                 DrinkPurchaseMessage();
@@ -132,7 +138,7 @@ namespace Capstone.CLI
             else if (type == "Candy")
             {
                 Console.WriteLine($"Item Name: {name}");
-                Console.WriteLine($"Item Price: {price}");
+                Console.WriteLine($"Item Price: ${price}");
                 Console.WriteLine($"Remaining Balance: ${otherNumber}");
 
                 CandyPurchaseMessage();
@@ -140,7 +146,7 @@ namespace Capstone.CLI
             else if (type == "Chip")
             {
                 Console.WriteLine($"Item Name: {name}");
-                Console.WriteLine($"Item Price: {price}");
+                Console.WriteLine($"Item Price: ${price}");
                 Console.WriteLine($"Remaining Balance: ${otherNumber}");
 
                 ChipsPurchaseMessage();

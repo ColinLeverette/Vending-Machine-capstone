@@ -1,17 +1,17 @@
-﻿using Capstone.classes;     // could possibly ruin future code maybe mabye not
-using System;
+﻿using Capstone.classes;   
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using MenuFramework;
 using Capstone.CLI;
+using System;
 
 namespace Capstone
 {
 
     public class VendingMachine
     {
-        public decimal Balance { get; set; }
+        public decimal Balance { get; set; } = 0;
 
         string filePath = @"C:\Users\Student\git\c-module-1-capstone-team-2\19_Capstone\vendingmachine.csv";
 
@@ -19,15 +19,21 @@ namespace Capstone
 
         
 
-        public void CurrentMoneyProvided(decimal moneyEntered)
+        public decimal CurrentMoneyProvided(decimal moneyEntered) // dont touch
         {
-            Balance = moneyEntered + Balance;
-        }
+           // initialBalance = 0;
+            Balance = Balance + moneyEntered;
+            return Balance;
+        } 
 
-        //public void ErrorWrongChoiceMethod(string slotCode)
-        //{
-        //    Console.WriteLine("Error! Incorrect Choice. Please Try Again.");
-        //}
+        public decimal RunningBalanceMethod(decimal userMoneyEntered)
+        {
+            decimal runningBalance;
+            runningBalance = Balance + userMoneyEntered;
+            return runningBalance;
+        }
+        
+
         public MenuOptionResult UserItemChoice(string userCodeEntered)
         {
             //Each slot has a starting stock of 5
@@ -36,27 +42,29 @@ namespace Capstone
             //string userPurchaseChoice = Console.ReadLine();
             PurchaseMenu purchaseMenu = new PurchaseMenu();
 
-            if (TotalInventoryList.ContainsKey((userCodeEntered.ToUpper())) == false)
+            if (userCodeEntered.Length <= 1 || TotalInventoryList.ContainsKey(userCodeEntered.ToUpper()) == false)
             {
                 purchaseMenu.WrongSlotIdEnteredError();
             }
+            
             foreach (KeyValuePair<string, VendingMachineItems> kvp in TotalInventoryList)
             {            
-                if (kvp.Key.Contains(userCodeEntered.ToUpper())) /*&& (kvp.Value.StockCount > 0 && Balance >= kvp.Value.Price))*/
+                
+                if (kvp.Key.Contains(userCodeEntered.ToUpper()) && userCodeEntered.Length == 2) /*&& (kvp.Value.StockCount > 0 && Balance >= kvp.Value.Price))*/
                 {
                     if (kvp.Value.StockCount > 0 && Balance >= kvp.Value.Price)
                     {
                         kvp.Value.StockCount -= 1;
-                        Balance = Balance - kvp.Value.Price;                        
+                        Balance -= kvp.Value.Price;                        
                         purchaseMenu.ItemChoiceDisplayMessage(kvp.Value.ProductType, kvp.Value.Name, kvp.Value.Price, Balance);
-                        
-                        
+                        AuditLogPurchaseMethod(kvp.Value.Name, kvp.Key, RunningBalanceMethod(kvp.Value.Price), Balance);
+
                         //if (kvp.Value.ProductType == "Gum")
                         //{
                         //    Console.WriteLine($"Item Name: {kvp.Value.Name}");
                         //    Console.WriteLine($"Item Price: {kvp.Value.Price}");
                         //    Console.WriteLine($"Remaining Balance: ${Balance}");
-                                
+
                         //    purchaseMenu.GumPurchaseMessage();
                         //}
                         //if (kvp.Value.ProductType == "Drink")
@@ -101,9 +109,6 @@ namespace Capstone
             return MenuOptionResult.WaitAfterMenuSelection;
         }
 
-
-
-
         public void ReadFile()
         {
             using (StreamReader reader = new StreamReader(@"C:\Users\Student\git\c-module-1-capstone-team-2\19_Capstone\vendingmachine.csv"))
@@ -143,15 +148,37 @@ namespace Capstone
             }
         }
 
-        public void AuditLog(string action, decimal balance)
+        public void AuditLogFeedMoney(string action, decimal initialBalance, decimal runningBalance)
         {
             string outPath = "../../../../Log.txt";
 
             using (StreamWriter writer = new StreamWriter(outPath, true))
             {               
                 DateTime now = new DateTime();
-                writer.WriteLine($"{now} {action}: {balance} {Balance}");
-                    
+                writer.WriteLine($"{DateTime.Now} {action} {initialBalance} {runningBalance}");
+
+            }
+        }
+
+        public void AuditLogPurchaseMethod(string action,  string slotId, decimal currentBalance, decimal updatedBalance)
+        {
+            string outPath = "../../../../Log.txt";
+
+            using (StreamWriter writer = new StreamWriter(outPath, true))
+            {
+                DateTime now = new DateTime();
+                writer.WriteLine($"{DateTime.Now} {action} {slotId}  {currentBalance} {updatedBalance}");
+            }
+        }
+
+
+        public void AuditLogGiveChangeMethod(string action, decimal currentBalance, decimal updatedBalance)
+        {
+            string outPath = "../../../../Log.txt";
+
+            using (StreamWriter writer = new StreamWriter(outPath, true))
+            {
+                writer.WriteLine($"{DateTime.Now} {action} {currentBalance} {updatedBalance}");
             }
         }
 
@@ -162,11 +189,4 @@ namespace Capstone
 
     }
 }
-
-
-
-
-
-
-
 
