@@ -7,9 +7,9 @@ using Capstone.classes;
 namespace Capstone.CLI
 {
 
-    public class PurchaseMenu : ConsoleMenu 
+    public class PurchaseMenu : ConsoleMenu
     {
-        public VendingMachine ourVendingMachine { get;  set; }
+        public VendingMachine ourVendingMachine { get; set; }
         public Dictionary<string, VendingMachineItems> TotalInventoryList { get; set; }
 
         public MenuOptionResult CurrentMoneyProvided()
@@ -22,9 +22,11 @@ namespace Capstone.CLI
                 while (moneyEntered == 1 || moneyEntered == 5 || moneyEntered == 10 || moneyEntered == 20)
                 {
                     ourVendingMachine.CurrentMoneyProvided(moneyEntered);
+                    ourVendingMachine.AuditLog("Feed Money", moneyEntered);
                     return MenuOptionResult.DoNotWaitAfterMenuSelection;
                 }
                 DollarAmountErrorMessage();
+
             }
         }
 
@@ -39,7 +41,7 @@ namespace Capstone.CLI
             string userPurchaseChoice = GetString("What would you like to purchase ? (ex: A1, C3, B1) ");
 
             ourVendingMachine.UserItemChoice(userPurchaseChoice);
-           
+            // AUDIT LOG ourVendingMachine.AuditLog($"{TotalInventoryList[userPurchaseChoice].Name} {TotalInventoryList[userPurchaseChoice].SlotId}", ourVendingMachine.GetBalance());
             //return MenuOptionResult.WaitAfterMenuSelection;
             return MenuOptionResult.WaitAfterMenuSelection;
 
@@ -80,11 +82,17 @@ namespace Capstone.CLI
             Console.WriteLine("Please enter a valid dollar amount ($1, $5, $10, $20)");
         }
 
+        public void InsufficientFundsMessage()
+        {
+            Console.WriteLine("Please feed more money.");
+        }
+
+
         protected override void OnAfterShow()
         {
             Console.WriteLine($"This is your current balance {ourVendingMachine.Balance}");
         }
-        //public VendingMachine randomVendingMachine = new VendingMachine();
+
         public PurchaseMenu()
         {
 
@@ -92,7 +100,7 @@ namespace Capstone.CLI
             AddOption("Select Product", UserItemChoice, "2");
             AddOption("Finish Transaction", Close, "3");
 
-        //    AddOption($"Current Money Provided: {ourVendingMachine.Balance}", Whatever222, "4"); // to make current money provided an option and u click it and it displays the curent money balance
+            //    AddOption($"Current Money Provided: {ourVendingMachine.Balance}", Whatever222, "4"); // to make current money provided an option and u click it and it displays the curent money balance
 
             Configure(cfg =>
             {
@@ -101,19 +109,42 @@ namespace Capstone.CLI
                 cfg.KeyStringTextSeparator = ": ";
                 cfg.Title = "Purchase Menu";
             });
-       
-
-            //MenuOptionResult Whatever222()
-            //{
-
-            //    Console.WriteLine($"Current Money Provided: {ourVendingMachine.Balance}");
-
-            //    return MenuOptionResult.WaitAfterMenuSelection;
-            //}
-            
-
         }
 
-       
+        public void ItemChoiceDisplayMessage(string type, string name, decimal price, decimal otherNumber)
+        {
+            if (type == "Gum")
+            {
+                Console.WriteLine($"Item Name: {name}");
+                Console.WriteLine($"Item Price: {price}");
+                Console.WriteLine($"Remaining Balance: ${otherNumber}");
+
+                GumPurchaseMessage();
+            }
+            else if (type == "Drink")
+            {
+                Console.WriteLine($"Item Name: {name}");
+                Console.WriteLine($"Item Price: {price}");
+                Console.WriteLine($"Remaining Balance: ${otherNumber}");
+
+                DrinkPurchaseMessage();
+            }
+            else if (type == "Candy")
+            {
+                Console.WriteLine($"Item Name: {name}");
+                Console.WriteLine($"Item Price: {price}");
+                Console.WriteLine($"Remaining Balance: ${otherNumber}");
+
+                CandyPurchaseMessage();
+            }
+            else if (type == "Chip")
+            {
+                Console.WriteLine($"Item Name: {name}");
+                Console.WriteLine($"Item Price: {price}");
+                Console.WriteLine($"Remaining Balance: ${otherNumber}");
+
+                ChipsPurchaseMessage();
+            }                     
+        }
     }
 }

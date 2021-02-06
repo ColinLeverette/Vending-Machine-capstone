@@ -17,84 +17,11 @@ namespace Capstone
 
         public Dictionary<string, VendingMachineItems> TotalInventoryList = new Dictionary<string, VendingMachineItems>();
 
-        //public void GiveChangeMethod(decimal balance)
-        //{
-
-        //    decimal twentyDollarBill = 20M;
-        //    decimal tenDollarBill = 10M;
-        //    decimal fiveDollarBill = 5M;
-        //    decimal oneDollarBill = 1M;
-        //    decimal quarter = 0.25M;
-        //    decimal dime = 0.10M;
-        //    decimal nickel = 0.05M;
-        //    //decimal userChangeBalance = Balance;
-        //    int twentyDollarCount = 0;
-        //    int tenDollarBillCount = 0;
-        //    int fiveDollarBillCount = 0;
-        //    int oneDollarBillCount = 0;
-        //    int quarterCount = 0;
-        //    int dimeCount = 0;
-        //    int nickelCount = 0;
-
-
-        //    for (decimal i = 0M; i > 0; i++)
-        //    {
-        //        if (balance >= twentyDollarBill)
-        //        {
-        //            balance = balance - twentyDollarBill;
-        //            twentyDollarCount++;
-        //        }
-        //        else if (balance >= tenDollarBill && balance < twentyDollarBill)
-        //        {
-        //            balance = balance - tenDollarBill;
-        //            tenDollarBillCount++;
-        //        }
-        //        else if (balance >= fiveDollarBill && balance < tenDollarBill)
-        //        {
-        //            balance = balance - fiveDollarBill;
-        //            fiveDollarBillCount++;
-        //        }
-        //        else if (balance >= oneDollarBill && balance < fiveDollarBill)
-        //        {
-        //            balance = balance - oneDollarBill;
-        //            oneDollarBillCount++;
-        //        }
-        //        else if (balance >= quarter && balance < oneDollarBill)
-        //        {
-        //            balance = balance - quarter;
-        //            quarterCount++;
-        //        }
-        //        else if (balance >= dime && balance < quarter)
-        //        {
-        //            balance = balance - dime;
-        //            dimeCount++;
-        //        }
-        //        else if (balance >= nickel && balance < dime)
-        //        {
-        //            balance = balance - nickel;
-        //            nickelCount++;
-        //        }
-        //        Console.WriteLine(twentyDollarCount);
-        //        Console.WriteLine(tenDollarBillCount);
-        //        Console.WriteLine(fiveDollarBillCount);
-        //        Console.WriteLine(oneDollarBillCount);
-        //        Console.WriteLine(quarterCount);
-        //        Console.WriteLine(dimeCount);
-        //        Console.WriteLine(nickelCount);
-
-
-
-        //    }
-
-
-        //}
-
+        
 
         public void CurrentMoneyProvided(decimal moneyEntered)
         {
-
             Balance = moneyEntered + Balance;
-
         }
 
         //public void ErrorWrongChoiceMethod(string slotCode)
@@ -108,58 +35,69 @@ namespace Capstone
             //Console.WriteLine("What would you like to purchase? (ex: A1, C3, B1) ");
             //string userPurchaseChoice = Console.ReadLine();
             PurchaseMenu purchaseMenu = new PurchaseMenu();
-            foreach (KeyValuePair<string, VendingMachineItems> kvp in TotalInventoryList)
+
+            if (TotalInventoryList.ContainsKey((userCodeEntered.ToUpper())) == false)
             {
-
-                if (kvp.Key.Contains(userCodeEntered.ToUpper()) == false)
-                {
-                    purchaseMenu.WrongSlotIdEnteredError();
-                    return MenuOptionResult.WaitAfterMenuSelection;
-                }
-                else if (kvp.Key.Contains(userCodeEntered.ToUpper()) && (kvp.Value.StockCount >= 1 && Balance >= kvp.Value.Price))
-                {
-                    
-                    kvp.Value.StockCount -= 1;
-                    Balance = Balance - kvp.Value.Price;
-                    if (kvp.Value.ProductType == "Gum")
-                    {
-                        purchaseMenu.GumPurchaseMessage();
-                    }
-                    if (kvp.Value.ProductType == "Drink")
-                    {
-                        purchaseMenu.DrinkPurchaseMessage();
-                    }
-                    if (kvp.Value.ProductType == "Candy")
-                    {
-                        purchaseMenu.CandyPurchaseMessage();
-                    }
-                    if (kvp.Value.ProductType == "Chip")
-                    {
-                        purchaseMenu.ChipsPurchaseMessage();
-                    }
-
-                    //Take them back to the purchase menu
-                    return MenuOptionResult.WaitAfterMenuSelection;
-                }
-                else if (kvp.Value.StockCount < 1)
-                {
-                    purchaseMenu.NotEnoughStock();
-                    return MenuOptionResult.WaitAfterMenuSelection;
-                }
-
-                
-
-
-
-
-
-
-
-                //if money provided is greater than the price (DONE)
-                //balance decreases (DONE)
-
+                purchaseMenu.WrongSlotIdEnteredError();
             }
-            //ErrorWrongChoiceMethod(userCodeEntered);
+            foreach (KeyValuePair<string, VendingMachineItems> kvp in TotalInventoryList)
+            {            
+                if (kvp.Key.Contains(userCodeEntered.ToUpper())) /*&& (kvp.Value.StockCount > 0 && Balance >= kvp.Value.Price))*/
+                {
+                    if (kvp.Value.StockCount > 0 && Balance >= kvp.Value.Price)
+                    {
+                        kvp.Value.StockCount -= 1;
+                        Balance = Balance - kvp.Value.Price;                        
+                        purchaseMenu.ItemChoiceDisplayMessage(kvp.Value.ProductType, kvp.Value.Name, kvp.Value.Price, Balance);
+                        
+                        
+                        //if (kvp.Value.ProductType == "Gum")
+                        //{
+                        //    Console.WriteLine($"Item Name: {kvp.Value.Name}");
+                        //    Console.WriteLine($"Item Price: {kvp.Value.Price}");
+                        //    Console.WriteLine($"Remaining Balance: ${Balance}");
+                                
+                        //    purchaseMenu.GumPurchaseMessage();
+                        //}
+                        //if (kvp.Value.ProductType == "Drink")
+                        //{
+                        //    Console.WriteLine($"Item Name: {kvp.Value.Name}");
+                        //    Console.WriteLine($"Item Price: {kvp.Value.Price}");
+                        //    Console.WriteLine($"Remaining Balance: ${Balance}");
+                        //    purchaseMenu.DrinkPurchaseMessage();
+                        //}
+                        //if (kvp.Value.ProductType == "Candy")
+                        //{
+                        //    Console.WriteLine($"Item Name: {kvp.Value.Name}");
+                        //    Console.WriteLine($"Item Price: {kvp.Value.Price}");
+                        //    Console.WriteLine($"Remaining Balance: ${Balance}");
+                        //    purchaseMenu.CandyPurchaseMessage();
+                        //}
+                        //if (kvp.Value.ProductType == "Chip")
+                        //{
+                        //    Console.WriteLine($"Item Name: {kvp.Value.Name}");
+                        //    Console.WriteLine($"Item Price: {kvp.Value.Price}");
+                        //    Console.WriteLine($"Remaining Balance: ${Balance}");
+                        //    purchaseMenu.ChipsPurchaseMessage();
+                        //}
+
+                        //Take them back to the purchase menu
+                        return MenuOptionResult.WaitAfterMenuSelection;
+                    }
+                    else if (Balance < kvp.Value.Price)
+                    {
+                        purchaseMenu.InsufficientFundsMessage();
+                    }
+                    else if (kvp.Value.StockCount == 0)
+                    {
+                        {
+                            purchaseMenu.NotEnoughStock();
+                            return MenuOptionResult.WaitAfterMenuSelection;
+                        }
+                    }
+                }              
+            }
+            // TODO check if this is a thing delete potentially ErrorWrongChoiceMethod(userCodeEntered);           
             return MenuOptionResult.WaitAfterMenuSelection;
         }
 
@@ -205,29 +143,30 @@ namespace Capstone
             }
         }
 
+        public void AuditLog(string action, decimal balance)
+        {
+            string outPath = "../../../../Log.txt";
+
+            using (StreamWriter writer = new StreamWriter(outPath, true))
+            {               
+                DateTime now = new DateTime();
+                writer.WriteLine($"{now} {action}: {balance} {Balance}");
+                    
+            }
+        }
+
+        public decimal GetBalance()
+        {
+            return this.Balance;
+        }
+
     }
 }
 
 
 
 
-//using (StreamReader reader = new StreamReader(fileName))
-//{
-//    while (!reader.EndOfStream)            // while NOT at the end of the stream
-//    {
-//        // read the next line
-//        string input = reader.ReadLine();
 
-//        // split the line into individual fields
-//        string[] fields = input.Split("|");
-
-//        string stateName = fields[0];
-//        string stateCode = fields[1];
-//        string capital = fields[2];
-//        string largest = fields[3];
-
-//        State state = new State(stateCode, stateName, capital, largest);
-//        stateList.Add(state);
 
 
 
