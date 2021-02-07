@@ -27,13 +27,12 @@ namespace Capstone.CLI
                 {
                     
                     ourVendingMachine.AuditLogFeedMoney("FEED MONEY:", ourVendingMachine.Balance, ourVendingMachine.RunningBalanceMethod(moneyEntered));
-                    ourVendingMachine.CurrentMoneyProvided(moneyEntered);
+                    ourVendingMachine.AddMoney(moneyEntered);
                     
                     // blaance and balance + money entered
                     return MenuOptionResult.DoNotWaitAfterMenuSelection;
                 }
                 DollarAmountErrorMessage();
-
             }
         }
 

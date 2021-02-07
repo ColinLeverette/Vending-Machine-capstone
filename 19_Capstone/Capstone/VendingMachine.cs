@@ -24,7 +24,7 @@ namespace Capstone
 
 
 
-        public decimal CurrentMoneyProvided(decimal moneyEntered) // dont touch
+        public decimal AddMoney(decimal moneyEntered) // dont touch
         {
             // initialBalance = 0;
             Balance = Balance + moneyEntered;
@@ -125,41 +125,39 @@ namespace Capstone
 
         public List<string> ReadFileNew()
         {
+            List<string> restockList = new List<string>();
             using (StreamReader reader = new StreamReader(@"C:\Users\Student\git\c-module-1-capstone-team-2\19_Capstone\vendingmachine.csv"))
             {
                 while (!reader.EndOfStream)
                 {
                     string inventoryLine = reader.ReadLine(); // Reads every line and assigns the whole line to the string
 
-                    string[] lineSplit = inventoryLine.Split("|");// splits the string into an array. 
+                    restockList.Add(inventoryLine);
 
-                    string productName = lineSplit[1];
-                    decimal itemPrice = decimal.Parse(lineSplit[2]);
-                    string slotId = lineSplit[0];
-                    string productType = lineSplit[3];
-
-                    //VendingMachineItems item = new VendingMachineItems(productName, itemPrice, 5, slotId);
-                    VendingMachineItems item = new VendingMachineItems();
-
-
-                    item.Name = lineSplit[1];
-                    item.Price = decimal.Parse(lineSplit[2]);
-                    item.SlotId = lineSplit[0];
-                    item.ProductType = lineSplit[3];
-                    item.StockCount = 5;
-
-                    //(lineSplit[1], decimal.Parse(lineSplit[2]), 5, lineSplit[0], lineSplit[3])
-                    TotalInventoryDictionary.Add(lineSplit[0], item);
                 }
                 //read all the lines from the file, return them as a list of strings
-                return null;
+                return restockList;
+            }
         }
 
-        public void RestockFromLines(List<string> fileLines)
+        public void RestockFromLines(List<string> fileLines) // we take our list of strings and loop through it 
+            // make a new machineitems. we split the list and set that to an array. set the indexes of the array to to the properties in the new machine
+            // then add the item to the new dictionary. 
         {
+            
             foreach (string line in fileLines)
             {
+                VendingMachineItems newItem = new VendingMachineItems();
 
+                string[] lineSplit = line.Split("|");
+
+                newItem.Name = lineSplit[1];
+                newItem.Price = decimal.Parse(lineSplit[2]);
+                newItem.SlotId = lineSplit[0];
+                newItem.ProductType = lineSplit[3];
+                newItem.StockCount = 5;
+
+                TotalInventoryDictionary.Add(lineSplit[0], newItem);
                 //add a new vendingMachine item with string.split("|")
             }
         }
@@ -238,13 +236,24 @@ namespace Capstone
             }
         }
 
-        public decimal GetBalance()
-        {
-            return this.Balance;
-        }
-
+       
     }
+
+
+
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 //if (kvp.Value.ProductType == "Gum")
 //{

@@ -26,7 +26,7 @@ namespace Capstone
             // perform its actions against....
             MainMenu mainMenu = new MainMenu();
 
-            mainMenu.ourVendingMachine.ReadFile();
+            mainMenu.ourVendingMachine.RestockFromLines(mainMenu.ourVendingMachine.ReadFileNew());
             
             mainMenu.Show();
             //PurchaseMenu purchaseMenu = new PurchaseMenu();
