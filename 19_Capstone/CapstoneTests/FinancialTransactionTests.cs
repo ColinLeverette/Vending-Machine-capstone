@@ -1,4 +1,5 @@
 ﻿using Capstone;
+using Capstone.classes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,9 @@ namespace CapstoneTests
     public class FinancialTransactionTests
     {
         [DataTestMethod]
-        [DataRow("ponpoadnjpofnpounfapdosunpadsougn", "WaitAfterMenuSelection")]
+        [DataRow("ponpoadnjpofnpounfapdosunpadsougn", "Wrong Slot ID entered")]
+        [DataRow("a1", "")]
+
 
 
         public void SufficientFundsTest(string firstInput, string expectedResult)
@@ -29,31 +32,36 @@ namespace CapstoneTests
 
         }
 
-        [TestMethod]
-        
+        [DataTestMethod]
+        [DataRow(5.0, 5.0)]
+        [DataRow(0.0, 0.0)]
+        [DataRow(100.0, 100.0)]
 
-        public void MoneyProvidedMethodTest (decimal moneyEntered, decimal expected)
+
+        public void MoneyProvidedMethodTest (double moneyEntered, double expected)
         {
             VendingMachine inputMoneytest = new VendingMachine();
 
-            decimal resultOfTest = inputMoneytest.CurrentMoneyProvided(moneyEntered);
+            decimal resultOfTest = inputMoneytest.CurrentMoneyProvided((decimal)moneyEntered);
 
 
-            Assert.AreEqual(expected, resultOfTest);
+            Assert.AreEqual((decimal)expected, resultOfTest);
 
         }
 
-        [TestMethod]
+        [DataTestMethod]
+        [DataRow(5.0,5.0)]
+        [DataRow(0.0, 0.0)]
+        [DataRow(100.0, 100.0)]
 
-
-        public void RunningBalancedMethodTest(decimal usermoneyEntered, decimal expected)
+        public void RunningBalancedMethodTest(double usermoneyEntered, double expected)
         {
             VendingMachine inputMoneytest = new VendingMachine();
 
-            decimal resultOfTest = inputMoneytest.CurrentMoneyProvided(usermoneyEntered);
+            decimal resultOfTest = inputMoneytest.CurrentMoneyProvided((decimal)usermoneyEntered);
 
 
-            Assert.AreEqual(expected, resultOfTest);
+            Assert.AreEqual((decimal)expected, resultOfTest);
 
         }
 

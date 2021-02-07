@@ -15,7 +15,7 @@ namespace Capstone.classes
         {
             get
             {
-                if (ProductType == "Chips")
+                if (ProductType == "Chip")
                 {
                     return "Crunch Crunch, Yum";
                 }

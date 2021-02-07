@@ -17,9 +17,13 @@ namespace Capstone.CLI
 
             while (true)
             {
-                decimal moneyEntered = GetDecimal("How much money would you want to add into the machine? ($1, $5, $10, $20)");
+                decimal moneyEntered = GetDecimal("How much money would you want to add into the machine? ($1, $5, $10, $20)", 0);
+                if (moneyEntered == 0)
+                {
+                    return MenuOptionResult.DoNotWaitAfterMenuSelection;
+                }
                 
-                while (moneyEntered == 1 || moneyEntered == 5 || moneyEntered == 10 || moneyEntered == 20)
+                if (moneyEntered == 1 || moneyEntered == 5 || moneyEntered == 10 || moneyEntered == 20)
                 {
                     
                     ourVendingMachine.AuditLogFeedMoney("FEED MONEY:", ourVendingMachine.Balance, ourVendingMachine.RunningBalanceMethod(moneyEntered));
@@ -33,7 +37,7 @@ namespace Capstone.CLI
             }
         }
 
-        public MenuOptionResult UserItemChoice()
+        public MenuOptionResult UserItemChoiceMenuOption()
         {
             //Each slot has a starting stock of 5
             // subtracts however many are bought from the defualt stock
@@ -43,7 +47,32 @@ namespace Capstone.CLI
             }
             string userPurchaseChoice = GetString("What would you like to purchase ? (ex: A1, C3, B1) ");
 
-            ourVendingMachine.UserItemChoice(userPurchaseChoice);
+            VendingMachineItems product;
+            try
+            {
+                product = ourVendingMachine.UserItemChoice(userPurchaseChoice);
+                
+                Console.WriteLine($"Enjoy your {product.Name}. {product.SlotId}. {product.Price:C}");
+                Console.WriteLine(product.PurchaseMessage);
+            } 
+            catch (Exception e)
+            {
+                if (e.Message == VendingMachine.INSUFFICIENT_FUNDS_MESSAGE)
+                {
+                    this.InsufficientFundsMessage();
+                }
+                else if (e.Message == VendingMachine.INVALID_SLOT_MESSAGE)
+                {
+                    this.WrongSlotIdEnteredError();
+                }
+                else if (e.Message == VendingMachine.OUT_OF_STOCK_MESSAGE)
+                {
+                    this.NotEnoughStock();
+                }
+            }
+            
+
+           // purchaseMenu.ItemChoiceDisplayMessage(kvp.Value.ProductType, kvp.Value.Name, kvp.Value.Price, Balance);
             // AUDIT LOG ourVendingMachine.AuditLog($"{TotalInventoryList[userPurchaseChoice].Name} {TotalInventoryList[userPurchaseChoice].SlotId}", ourVendingMachine.GetBalance());
             //return MenuOptionResult.WaitAfterMenuSelection;
             return MenuOptionResult.WaitAfterMenuSelection;
@@ -100,7 +129,7 @@ namespace Capstone.CLI
         {
 
             AddOption("Feed Money", FeedMoneyMethod, "1");
-            AddOption("Select Product", UserItemChoice, "2");
+            AddOption("Select Product", UserItemChoiceMenuOption, "2");
             AddOption("Finish Transaction", Close, "3");
 
             //    AddOption($"Current Money Provided: {ourVendingMachine.Balance}", Whatever222, "4"); // to make current money provided an option and u click it and it displays the curent money balance

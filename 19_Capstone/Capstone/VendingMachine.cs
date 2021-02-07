@@ -11,6 +11,11 @@ namespace Capstone
 
     public class VendingMachine
     {
+
+        public const string INVALID_SLOT_MESSAGE = "Wrong Slot ID entered";
+        public const string INSUFFICIENT_FUNDS_MESSAGE = "Insufficient Funds";
+        public const string OUT_OF_STOCK_MESSAGE = "Not enough stock";
+
         public decimal Balance { get; set; } = 0;
 
         string filePath = @"C:\Users\Student\git\c-module-1-capstone-team-2\19_Capstone\vendingmachine.csv";
@@ -33,18 +38,22 @@ namespace Capstone
             return runningBalance;
         }
         
-
-        public MenuOptionResult UserItemChoice(string userCodeEntered)
+        /// <summary>
+        /// -Checks user code input (ex: "A1", "B4")
+        /// -if code matches from the list-  dispense item and update balance
+        /// - if code does not match, release error message.
+        /// </summary>
+        /// <param name="userCodeEntered">this is the code that the user entered</param>
+        /// <returns></returns>
+        public VendingMachineItems UserItemChoice(string userCodeEntered) // MENU OPTION RESULT is the type
         {
-            //Each slot has a starting stock of 5
-            // subtracts however many are bought from the defualt stock
-            //Console.WriteLine("What would you like to purchase? (ex: A1, C3, B1) ");
-            //string userPurchaseChoice = Console.ReadLine();
-            PurchaseMenu purchaseMenu = new PurchaseMenu();
+            
+            //PurchaseMenu purchaseMenu = new PurchaseMenu();
 
             if (userCodeEntered.Length <= 1 || TotalInventoryList.ContainsKey(userCodeEntered.ToUpper()) == false)
             {
-                purchaseMenu.WrongSlotIdEnteredError();
+                throw new Exception(INVALID_SLOT_MESSAGE);
+                //purchaseMenu.WrongSlotIdEnteredError();
             }
             
             foreach (KeyValuePair<string, VendingMachineItems> kvp in TotalInventoryList)
@@ -55,58 +64,34 @@ namespace Capstone
                     if (kvp.Value.StockCount > 0 && Balance >= kvp.Value.Price)
                     {
                         kvp.Value.StockCount -= 1;
-                        Balance -= kvp.Value.Price;                        
-                        purchaseMenu.ItemChoiceDisplayMessage(kvp.Value.ProductType, kvp.Value.Name, kvp.Value.Price, Balance);
+                        Balance -= kvp.Value.Price;               
+                        
+                        //purchaseMenu.ItemChoiceDisplayMessage(kvp.Value.ProductType, kvp.Value.Name, kvp.Value.Price, Balance);
                         AuditLogPurchaseMethod(kvp.Value.Name, kvp.Key, RunningBalanceMethod(kvp.Value.Price), Balance);
-
-                        //if (kvp.Value.ProductType == "Gum")
-                        //{
-                        //    Console.WriteLine($"Item Name: {kvp.Value.Name}");
-                        //    Console.WriteLine($"Item Price: {kvp.Value.Price}");
-                        //    Console.WriteLine($"Remaining Balance: ${Balance}");
-
-                        //    purchaseMenu.GumPurchaseMessage();
-                        //}
-                        //if (kvp.Value.ProductType == "Drink")
-                        //{
-                        //    Console.WriteLine($"Item Name: {kvp.Value.Name}");
-                        //    Console.WriteLine($"Item Price: {kvp.Value.Price}");
-                        //    Console.WriteLine($"Remaining Balance: ${Balance}");
-                        //    purchaseMenu.DrinkPurchaseMessage();
-                        //}
-                        //if (kvp.Value.ProductType == "Candy")
-                        //{
-                        //    Console.WriteLine($"Item Name: {kvp.Value.Name}");
-                        //    Console.WriteLine($"Item Price: {kvp.Value.Price}");
-                        //    Console.WriteLine($"Remaining Balance: ${Balance}");
-                        //    purchaseMenu.CandyPurchaseMessage();
-                        //}
-                        //if (kvp.Value.ProductType == "Chip")
-                        //{
-                        //    Console.WriteLine($"Item Name: {kvp.Value.Name}");
-                        //    Console.WriteLine($"Item Price: {kvp.Value.Price}");
-                        //    Console.WriteLine($"Remaining Balance: ${Balance}");
-                        //    purchaseMenu.ChipsPurchaseMessage();
-                        //}
-
+                        return kvp.Value;
+                       
                         //Take them back to the purchase menu
-                        return MenuOptionResult.WaitAfterMenuSelection;
+                        //return MenuOptionResult.WaitAfterMenuSelection; ORIGINAL CHANGE BACK
                     }
                     else if (Balance < kvp.Value.Price)
                     {
-                        purchaseMenu.InsufficientFundsMessage();
+                        throw new Exception(INSUFFICIENT_FUNDS_MESSAGE);
+                        //purchaseMenu.InsufficientFundsMessage();
                     }
                     else if (kvp.Value.StockCount == 0)
                     {
-                        {
-                            purchaseMenu.NotEnoughStock();
-                            return MenuOptionResult.WaitAfterMenuSelection;
-                        }
+
+                        throw new Exception(OUT_OF_STOCK_MESSAGE);
+                        //purchaseMenu.NotEnoughStock();
+                            //return MenuOptionResult.WaitAfterMenuSelection; ORIGINAL CHANGE BACK
+                        
                     }
+                    return null;
                 }              
             }
+            return null;
             // TODO check if this is a thing delete potentially ErrorWrongChoiceMethod(userCodeEntered);           
-            return MenuOptionResult.WaitAfterMenuSelection;
+            //return MenuOptionResult.WaitAfterMenuSelection; ORIGINAL CHANGE BACK
         }
 
         public void ReadFile()
@@ -190,3 +175,32 @@ namespace Capstone
     }
 }
 
+//if (kvp.Value.ProductType == "Gum")
+//{
+//    Console.WriteLine($"Item Name: {kvp.Value.Name}");
+//    Console.WriteLine($"Item Price: {kvp.Value.Price}");
+//    Console.WriteLine($"Remaining Balance: ${Balance}");
+
+//    purchaseMenu.GumPurchaseMessage();
+//}
+//if (kvp.Value.ProductType == "Drink")
+//{
+//    Console.WriteLine($"Item Name: {kvp.Value.Name}");
+//    Console.WriteLine($"Item Price: {kvp.Value.Price}");
+//    Console.WriteLine($"Remaining Balance: ${Balance}");
+//    purchaseMenu.DrinkPurchaseMessage();
+//}
+//if (kvp.Value.ProductType == "Candy")
+//{
+//    Console.WriteLine($"Item Name: {kvp.Value.Name}");
+//    Console.WriteLine($"Item Price: {kvp.Value.Price}");
+//    Console.WriteLine($"Remaining Balance: ${Balance}");
+//    purchaseMenu.CandyPurchaseMessage();
+//}
+//if (kvp.Value.ProductType == "Chip")
+//{
+//    Console.WriteLine($"Item Name: {kvp.Value.Name}");
+//    Console.WriteLine($"Item Price: {kvp.Value.Price}");
+//    Console.WriteLine($"Remaining Balance: ${Balance}");
+//    purchaseMenu.ChipsPurchaseMessage();
+//}
