@@ -19,34 +19,23 @@ namespace Capstone.CLI
          * in through the constructor of the menu.
          * ****************************************************************************/
 
-        // NOTE: This constructor could be changed to accept arguments needed by the menu
-
-   
-        //TODO Add audit log 
-
         public MainMenu()
         {
-            // Add Sample menu options
+            // Adds menu options to initialize program for initial display menu
             AddOption("Display Vending Machine items", DisplayItems, "1");
             AddOption("Purchase", ExitStatement, "2");
             AddOption("Exit", Close, "3");
 
             Configure(cfg =>
            {
-               cfg.ItemForegroundColor = ConsoleColor.Cyan;
+               cfg.ItemForegroundColor = ConsoleColor.Yellow;
                cfg.MenuSelectionMode = MenuSelectionMode.KeyString; // KeyString: User types a key, Arrow: User selects with arrow
                cfg.KeyStringTextSeparator = ": ";
                cfg.Title = "Main Menu";
            });
         }
-
-        private MenuOptionResult GetTime()
-        {
-            Console.WriteLine($"The time is {DateTime.Now}");
-            return MenuOptionResult.WaitAfterMenuSelection;
-        }
-
-        //string name, decimal price, int stockCount, string slotId
+        
+        // Displays our dictionary that holds vending machine items
         public MenuOptionResult DisplayItems()
         {
             foreach (KeyValuePair<string, VendingMachineItems> kvp in ourVendingMachine.TotalInventoryDictionary)
@@ -56,6 +45,7 @@ namespace Capstone.CLI
             return MenuOptionResult.WaitAfterMenuSelection;
         }
 
+        // Provides change amount to user and dispenses it
         public MenuOptionResult ExitStatement()
         {
             PurchaseMenu purchaseMenu = new PurchaseMenu();

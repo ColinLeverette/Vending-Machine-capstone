@@ -8,14 +8,14 @@ using System;
 
 namespace Capstone
 {
-
     public class VendingMachine
     {
-
+        // Error message constants 
         public const string INVALID_SLOT_MESSAGE = "Wrong Slot ID entered";
         public const string INSUFFICIENT_FUNDS_MESSAGE = "Insufficient Funds";
         public const string OUT_OF_STOCK_MESSAGE = "Not enough stock";
-
+        
+        // setting initial balance to 0
         public decimal Balance { get; set; } = 0;
 
         string filePath = @"C:\Users\Student\git\c-module-1-capstone-team-2\19_Capstone\vendingmachine.csv";
@@ -23,15 +23,13 @@ namespace Capstone
         public Dictionary<string, VendingMachineItems> TotalInventoryDictionary = new Dictionary<string, VendingMachineItems>();
 
 
-
-        public decimal AddMoney(decimal moneyEntered) // dont touch
+        public decimal AddMoney(decimal moneyEntered)   // Adds user's money and increases balance
         {
-            // initialBalance = 0;
             Balance = Balance + moneyEntered;
             return Balance;
         }
 
-        public decimal RunningBalanceMethod(decimal userMoneyEntered)
+        public decimal RunningBalanceMethod(decimal userMoneyEntered)  // Sets a running balance equal to balance + money entered by user
         {
             decimal runningBalance;
             runningBalance = Balance + userMoneyEntered;
@@ -45,25 +43,16 @@ namespace Capstone
         /// </summary>
         /// <param name="userCodeEntered">this is the code that the user entered</param>
         /// <returns></returns>
-        public VendingMachineItems UserItemChoice(string userCodeEntered) // MENU OPTION RESULT is the type
+        
+        public VendingMachineItems UserItemChoice(string userCodeEntered)  
         {
             userCodeEntered = userCodeEntered.ToUpper();
-            //PurchaseMenu purchaseMenu = new PurchaseMenu();
-            // (userCodeEntered.Length <= 1 ||
-            //if (TotalInventoryDictionary.ContainsKey(userCodeEntered.ToUpper()) == false)
-            //{
-            //    throw new Exception(INVALID_SLOT_MESSAGE);
-            //    //purchaseMenu.WrongSlotIdEnteredError();
-            //}
-
-            //foreach (KeyValuePair<string, VendingMachineItems> kvp in TotalInventoryDictionary)
-            //{
-
-
+            
             if (TotalInventoryDictionary.ContainsKey(userCodeEntered))
             {
                 VendingMachineItems selectedItem = TotalInventoryDictionary[userCodeEntered];
-
+                AuditLogPurchaseMethod(selectedItem.Name, selectedItem.SlotId, Balance, Balance - selectedItem.Price); 
+            
                 if (selectedItem.StockCount == 0)
                 {
                     throw new Exception(OUT_OF_STOCK_MESSAGE);
@@ -77,53 +66,9 @@ namespace Capstone
                 return selectedItem;
             }
             else { throw new Exception(INVALID_SLOT_MESSAGE); }
-            
-            //        
-            //      return selectedItem
-            //else
-            //                        {
-            //       //item not found
-            //         return null
-
-
-
-
-            //    if (TotalInventoryDictionary.ContainsKey(userCodeEntered)) /*&& (kvp.Value.StockCount > 0 && Balance >= kvp.Value.Price))*/
-            //    {
-            //        if (kvp.Value.StockCount > 0 && Balance >= kvp.Value.Price)
-            //        {
-            //            kvp.Value.StockCount -= 1;
-            //            Balance -= kvp.Value.Price;               
-
-            //            //purchaseMenu.ItemChoiceDisplayMessage(kvp.Value.ProductType, kvp.Value.Name, kvp.Value.Price, Balance);
-            //            AuditLogPurchaseMethod(kvp.Value.Name, kvp.Key, RunningBalanceMethod(kvp.Value.Price), Balance);
-            //            return kvp.Value;
-
-            //            //Take them back to the purchase menu
-            //            //return MenuOptionResult.WaitAfterMenuSelection; ORIGINAL CHANGE BACK
-            //        }
-            //        else if (Balance < kvp.Value.Price)
-            //        {
-            //            throw new Exception(INSUFFICIENT_FUNDS_MESSAGE);
-            //            //purchaseMenu.InsufficientFundsMessage();
-            //        }
-            //        else if (kvp.Value.StockCount == 0)
-            //        {
-
-            //            throw new Exception(OUT_OF_STOCK_MESSAGE);
-            //            //purchaseMenu.NotEnoughStock();
-            //                //return MenuOptionResult.WaitAfterMenuSelection; ORIGINAL CHANGE BACK
-
-            //        }
-            //        return null;
-            //    }              
-            //}
-            return null;
-            // TODO check if this is a thing delete potentially ErrorWrongChoiceMethod(userCodeEntered);           
-            //return MenuOptionResult.WaitAfterMenuSelection; ORIGINAL CHANGE BACK
         }
 
-        public List<string> ReadFileNew()
+        public List<string> ReadFileNew()  // Reads from the file and adds to restock list line by line
         {
             List<string> restockList = new List<string>();
             using (StreamReader reader = new StreamReader(@"C:\Users\Student\git\c-module-1-capstone-team-2\19_Capstone\vendingmachine.csv"))
@@ -144,7 +89,6 @@ namespace Capstone
             // make a new machineitems. we split the list and set that to an array. set the indexes of the array to to the properties in the new machine
             // then add the item to the new dictionary. 
         {
-            
             foreach (string line in fileLines)
             {
                 VendingMachineItems newItem = new VendingMachineItems();
@@ -158,7 +102,6 @@ namespace Capstone
                 newItem.StockCount = 5;
 
                 TotalInventoryDictionary.Add(lineSplit[0], newItem);
-                //add a new vendingMachine item with string.split("|")
             }
         }
         
@@ -239,48 +182,5 @@ namespace Capstone
        
     }
 
-
-
-
-
-
-
 }
 
-
-
-
-
-
-
-
-
-//if (kvp.Value.ProductType == "Gum")
-//{
-//    Console.WriteLine($"Item Name: {kvp.Value.Name}");
-//    Console.WriteLine($"Item Price: {kvp.Value.Price}");
-//    Console.WriteLine($"Remaining Balance: ${Balance}");
-
-//    purchaseMenu.GumPurchaseMessage();
-//}
-//if (kvp.Value.ProductType == "Drink")
-//{
-//    Console.WriteLine($"Item Name: {kvp.Value.Name}");
-//    Console.WriteLine($"Item Price: {kvp.Value.Price}");
-//    Console.WriteLine($"Remaining Balance: ${Balance}");
-//    purchaseMenu.DrinkPurchaseMessage();
-//}
-//if (kvp.Value.ProductType == "Candy")
-//{
-//    Console.WriteLine($"Item Name: {kvp.Value.Name}");
-//    Console.WriteLine($"Item Price: {kvp.Value.Price}");
-//    Console.WriteLine($"Remaining Balance: ${Balance}");
-//    purchaseMenu.CandyPurchaseMessage();
-//}
-//if (kvp.Value.ProductType == "Chip")
-//{
-//    Console.WriteLine($"Item Name: {kvp.Value.Name}");
-//    Console.WriteLine($"Item Price: {kvp.Value.Price}");
-//    Console.WriteLine($"Remaining Balance: ${Balance}");
-//    purchaseMenu.ChipsPurchaseMessage();
-//}

@@ -5,13 +5,13 @@ using System.Text;
 namespace Capstone.classes
 {
     public class VendingMachineItems
-    {
+    {          // Creates instance of a product in the vending machine with these properties
         public string Name { get; set; }
         public decimal Price { get; set; }
         public int StockCount { get; set; } = 5;
         public string SlotId { get; set; }
         public string ProductType { get; set; }
-        public string PurchaseMessage          // derived
+        public string PurchaseMessage          // derived property with a specific message for product type. 
         {
             get
             {
@@ -35,10 +35,7 @@ namespace Capstone.classes
 
             }
         }
-
-        // public string PurchaseMessage { get; set; } Derived property from slotid get 
-
-
+           // Constructors 
         public VendingMachineItems(string name, decimal price, int stockCount, string slotId, string productType)
         {
             Name = Name;
@@ -47,17 +44,11 @@ namespace Capstone.classes
             SlotId = slotId;
            
             ProductType = ProductType;
-
         }
 
         public VendingMachineItems()
         {
         }
-
-        //public string PrintPurchaseMessage();
-
-
-
     }
 
 

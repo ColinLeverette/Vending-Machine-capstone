@@ -6,15 +6,14 @@ using Capstone.classes;
 
 namespace Capstone.CLI
 {
-
     public class PurchaseMenu : ConsoleMenu
     {
         public VendingMachine ourVendingMachine { get; set; }
-        public Dictionary<string, VendingMachineItems> TotalInventoryList { get; set; }
+        public Dictionary<string, VendingMachineItems> TotalInventoryList { get; set; }  // Dictionary to hold items in vending machine
 
+        // Takes user's money in specific dollar amounts only
         public MenuOptionResult FeedMoneyMethod()
         {
-
             while (true)
             {
                 decimal moneyEntered = GetDecimal("How much money would you want to add into the machine? ($1, $5, $10, $20)", 0);
@@ -36,10 +35,9 @@ namespace Capstone.CLI
             }
         }
 
+        // Asks user what they'd like to choose based on SlotID,  displays error messages based on stock amount and if there's enough funds
         public MenuOptionResult UserItemChoiceMenuOption()
         {
-            //Each slot has a starting stock of 5
-            // subtracts however many are bought from the defualt stock
             foreach (KeyValuePair<string, VendingMachineItems> kvp in ourVendingMachine.TotalInventoryDictionary)
             {
                 Console.WriteLine($"{kvp.Key} {kvp.Value.ProductType}     Quantity Remaining:   {kvp.Value.StockCount} \t {kvp.Value.Name} ${kvp.Value.Price} ");                
@@ -69,18 +67,10 @@ namespace Capstone.CLI
                     this.NotEnoughStock();
                 }
             }
-            
-
-           // purchaseMenu.ItemChoiceDisplayMessage(kvp.Value.ProductType, kvp.Value.Name, kvp.Value.Price, Balance);
-            // AUDIT LOG ourVendingMachine.AuditLog($"{TotalInventoryList[userPurchaseChoice].Name} {TotalInventoryList[userPurchaseChoice].SlotId}", ourVendingMachine.GetBalance());
-            //return MenuOptionResult.WaitAfterMenuSelection;
             return MenuOptionResult.WaitAfterMenuSelection;
-
-            //TODO Maybe put in wrong choice error message that prints out
-            //TODO if someone tries purchasing something and they dont have enough money, put a message (TRYING TO STEAL FOOD)
-
         }
 
+        // Messages based on product type
         public void GumPurchaseMessage()
         {
             Console.WriteLine("Chew Chew, Yum");
@@ -99,6 +89,7 @@ namespace Capstone.CLI
         {
             Console.WriteLine("Crunch Crunch, Yum");
         }
+        // Error messages based on stock amount, incorrect slotID, insufficient Funds, invalid dollar amount
         public void NotEnoughStock()
         {
             Console.WriteLine("Error: Sold out!");
@@ -118,30 +109,27 @@ namespace Capstone.CLI
             Console.WriteLine("Please feed more money.");
         }
 
-
         protected override void OnAfterShow()
         {
             Console.WriteLine($"This is your current balance ${ourVendingMachine.Balance}");
         }
-
+        
+        // Displays second menu after user selects "purchase menu"
         public PurchaseMenu()
         {
-
             AddOption("Feed Money", FeedMoneyMethod, "1");
             AddOption("Select Product", UserItemChoiceMenuOption, "2");
             AddOption("Finish Transaction", Close, "3");
 
-            //    AddOption($"Current Money Provided: {ourVendingMachine.Balance}", Whatever222, "4"); // to make current money provided an option and u click it and it displays the curent money balance
-
             Configure(cfg =>
             {
-                cfg.ItemForegroundColor = ConsoleColor.Cyan;
+                cfg.ItemForegroundColor = ConsoleColor.Yellow;
                 cfg.MenuSelectionMode = MenuSelectionMode.KeyString; // KeyString: User types a key, Arrow: User selects with arrow
                 cfg.KeyStringTextSeparator = ": ";
                 cfg.Title = "Purchase Menu";
             });
         }
-
+        // Displays item details and message based on product type selection
         public void ItemChoiceDisplayMessage(string type, string name, decimal price, decimal otherNumber)
         {
             if (type == "Gum")
@@ -151,9 +139,6 @@ namespace Capstone.CLI
                 Console.WriteLine($"Remaining Balance: ${otherNumber}");
 
                 GumPurchaseMessage();
-
-                //
-                
             }
             else if (type == "Drink")
             {

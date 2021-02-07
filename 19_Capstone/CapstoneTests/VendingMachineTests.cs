@@ -20,7 +20,8 @@ namespace CapstoneTests
         "B2|Big Chew|3.65|Gum" // List[3]
 
             // test always works with hard coded inventory, prevents people from chaing the items in CSV. 
-            // testing it the old way is difficult because i have to read from a file i/o exceptions, csv coulda changed, flexibility in testing. I can test different scenarios and dictionaries. test what happens if list is empty. can make empty list 
+            // testing it the old way is difficult because i have to read from a file i/o exceptions, csv coulda changed, 
+            //flexibility in testing. I can test different scenarios and dictionaries. test what happens if list is empty. can make empty list 
     };
 
 
@@ -34,17 +35,17 @@ namespace CapstoneTests
             string expectedItemName = "M&Ms";
             decimal expectedItemPrice = 3.05M;
             string expectedItemCategory = "Candy";
-
+           
 
             //Act
             VendingMachineItems resultItem = testVendingMachine.UserItemChoice("A1");
+
 
             // Assert
             Assert.AreEqual(expectedItemName, resultItem.Name);
             Assert.AreEqual(expectedItemPrice, resultItem.Price);
             Assert.AreEqual(expectedItemCategory, resultItem.ProductType);
-
-
+          
 
         }
         [TestMethod]
@@ -71,7 +72,8 @@ namespace CapstoneTests
             Assert.AreEqual(e.Message, VendingMachine.INVALID_SLOT_MESSAGE);
         }
         [TestMethod]
-        public void UserItemChoice_Test_InsufficientFunds()// surround user item choice in try catch, assert equals exception e.message, to invalid not enough money 
+        public void UserItemChoice_Test_InsufficientFunds()// surround user item choice in try catch, 
+                                  //     assert equals exception e.message, to invalid not enough money 
         {
             // Arrange
             VendingMachine testVendingMachine = new VendingMachine();
@@ -92,19 +94,36 @@ namespace CapstoneTests
             //Assert
             Assert.AreEqual(e.Message,VendingMachine.INSUFFICIENT_FUNDS_MESSAGE);
 
-
         }
         [TestMethod]
         public void UserItemChoice_Test_OutOfStock()
         {
+            // Arrange
+            VendingMachine testVendingMachine = new VendingMachine();
+            testVendingMachine.RestockFromLines(sampleStockFileLines);
+            testVendingMachine.AddMoney(20M);
+            Exception e = new Exception("");
 
+            //Act 
+            try
+            {
+                VendingMachineItems resultItem = testVendingMachine.UserItemChoice("A1");
+                VendingMachineItems resultItem1 = testVendingMachine.UserItemChoice("A1");
+                VendingMachineItems resultItem2 = testVendingMachine.UserItemChoice("A1");
+                VendingMachineItems resultItem3 = testVendingMachine.UserItemChoice("A1");
+                VendingMachineItems resultItem4 = testVendingMachine.UserItemChoice("A1");
+                VendingMachineItems resultItem5 = testVendingMachine.UserItemChoice("A1");
+            }
+            catch (Exception f)// catch insufficient stock error
+            {
+                e = f; // effectively makes e message "out of stock" ???
+            }
+            //Assert
+            Assert.AreEqual(e.Message, VendingMachine.OUT_OF_STOCK_MESSAGE);
         }
 
        
 
-
-
-      
 
         [DataTestMethod]
         [DataRow(5.0, 5.0)]
