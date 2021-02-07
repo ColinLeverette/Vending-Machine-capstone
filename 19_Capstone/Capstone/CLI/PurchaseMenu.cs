@@ -41,7 +41,7 @@ namespace Capstone.CLI
         {
             //Each slot has a starting stock of 5
             // subtracts however many are bought from the defualt stock
-            foreach (KeyValuePair<string, VendingMachineItems> kvp in ourVendingMachine.TotalInventoryList)
+            foreach (KeyValuePair<string, VendingMachineItems> kvp in ourVendingMachine.TotalInventoryDictionary)
             {
                 Console.WriteLine($"{kvp.Key} {kvp.Value.ProductType}     Quantity Remaining:   {kvp.Value.StockCount} \t {kvp.Value.Name} ${kvp.Value.Price} ");                
             }

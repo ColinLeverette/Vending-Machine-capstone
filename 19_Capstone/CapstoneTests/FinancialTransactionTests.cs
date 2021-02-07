@@ -12,17 +12,22 @@ namespace CapstoneTests
 
     public class FinancialTransactionTests
     {
+
         [DataTestMethod]
-        [DataRow("ponpoadnjpofnpounfapdosunpadsougn", "Wrong Slot ID entered")]
-        [DataRow("a1", "")]
+        [DataRow("ponpoadnjpofnpounfapdosunipadsougn", "Wrong Slot ID entered")]
+        [DataRow("a1", "" )]
 
 
 
         public void SufficientFundsTest(string firstInput, string expectedResult)
         {
-            // arrange
-            VendingMachine vendingMachineTest = new VendingMachine();
+          
 
+            // arrange
+            
+            Dictionary<string, VendingMachineItems> TestTotalInventoryDictionary = new Dictionary<string, VendingMachineItems>();
+            VendingMachine vendingMachineTest = new VendingMachine();
+            vendingMachineTest.ReadFile();
 
             // act
             string resultOfTest = vendingMachineTest.UserItemChoice(firstInput).ToString();

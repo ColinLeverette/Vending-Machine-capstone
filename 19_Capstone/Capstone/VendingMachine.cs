@@ -1,4 +1,4 @@
-﻿using Capstone.classes;   
+﻿using Capstone.classes;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -20,16 +20,16 @@ namespace Capstone
 
         string filePath = @"C:\Users\Student\git\c-module-1-capstone-team-2\19_Capstone\vendingmachine.csv";
 
-        public Dictionary<string, VendingMachineItems> TotalInventoryList = new Dictionary<string, VendingMachineItems>();
+        public Dictionary<string, VendingMachineItems> TotalInventoryDictionary = new Dictionary<string, VendingMachineItems>();
 
-        
+
 
         public decimal CurrentMoneyProvided(decimal moneyEntered) // dont touch
         {
-           // initialBalance = 0;
+            // initialBalance = 0;
             Balance = Balance + moneyEntered;
             return Balance;
-        } 
+        }
 
         public decimal RunningBalanceMethod(decimal userMoneyEntered)
         {
@@ -37,7 +37,7 @@ namespace Capstone
             runningBalance = Balance + userMoneyEntered;
             return runningBalance;
         }
-        
+
         /// <summary>
         /// -Checks user code input (ex: "A1", "B4")
         /// -if code matches from the list-  dispense item and update balance
@@ -47,54 +47,125 @@ namespace Capstone
         /// <returns></returns>
         public VendingMachineItems UserItemChoice(string userCodeEntered) // MENU OPTION RESULT is the type
         {
-            
+            userCodeEntered = userCodeEntered.ToUpper();
             //PurchaseMenu purchaseMenu = new PurchaseMenu();
+            // (userCodeEntered.Length <= 1 ||
+            //if (TotalInventoryDictionary.ContainsKey(userCodeEntered.ToUpper()) == false)
+            //{
+            //    throw new Exception(INVALID_SLOT_MESSAGE);
+            //    //purchaseMenu.WrongSlotIdEnteredError();
+            //}
 
-            if (userCodeEntered.Length <= 1 || TotalInventoryList.ContainsKey(userCodeEntered.ToUpper()) == false)
+            //foreach (KeyValuePair<string, VendingMachineItems> kvp in TotalInventoryDictionary)
+            //{
+
+
+            if (TotalInventoryDictionary.ContainsKey(userCodeEntered))
             {
-                throw new Exception(INVALID_SLOT_MESSAGE);
-                //purchaseMenu.WrongSlotIdEnteredError();
-            }
-            
-            foreach (KeyValuePair<string, VendingMachineItems> kvp in TotalInventoryList)
-            {            
-                
-                if (kvp.Key.Contains(userCodeEntered.ToUpper()) && userCodeEntered.Length == 2) /*&& (kvp.Value.StockCount > 0 && Balance >= kvp.Value.Price))*/
-                {
-                    if (kvp.Value.StockCount > 0 && Balance >= kvp.Value.Price)
-                    {
-                        kvp.Value.StockCount -= 1;
-                        Balance -= kvp.Value.Price;               
-                        
-                        //purchaseMenu.ItemChoiceDisplayMessage(kvp.Value.ProductType, kvp.Value.Name, kvp.Value.Price, Balance);
-                        AuditLogPurchaseMethod(kvp.Value.Name, kvp.Key, RunningBalanceMethod(kvp.Value.Price), Balance);
-                        return kvp.Value;
-                       
-                        //Take them back to the purchase menu
-                        //return MenuOptionResult.WaitAfterMenuSelection; ORIGINAL CHANGE BACK
-                    }
-                    else if (Balance < kvp.Value.Price)
-                    {
-                        throw new Exception(INSUFFICIENT_FUNDS_MESSAGE);
-                        //purchaseMenu.InsufficientFundsMessage();
-                    }
-                    else if (kvp.Value.StockCount == 0)
-                    {
+                VendingMachineItems selectedItem = TotalInventoryDictionary[userCodeEntered];
 
-                        throw new Exception(OUT_OF_STOCK_MESSAGE);
-                        //purchaseMenu.NotEnoughStock();
-                            //return MenuOptionResult.WaitAfterMenuSelection; ORIGINAL CHANGE BACK
-                        
-                    }
-                    return null;
-                }              
+                if (selectedItem.StockCount == 0)
+                {
+                    throw new Exception(OUT_OF_STOCK_MESSAGE);
+                }
+                else if (Balance < selectedItem.Price)
+                {
+                    throw new Exception(INSUFFICIENT_FUNDS_MESSAGE);
+                }
+                selectedItem.StockCount -= 1;
+                Balance -= selectedItem.Price; 
+                return selectedItem;
             }
+            else { throw new Exception(INVALID_SLOT_MESSAGE); }
+            
+            //        
+            //      return selectedItem
+            //else
+            //                        {
+            //       //item not found
+            //         return null
+
+
+
+
+            //    if (TotalInventoryDictionary.ContainsKey(userCodeEntered)) /*&& (kvp.Value.StockCount > 0 && Balance >= kvp.Value.Price))*/
+            //    {
+            //        if (kvp.Value.StockCount > 0 && Balance >= kvp.Value.Price)
+            //        {
+            //            kvp.Value.StockCount -= 1;
+            //            Balance -= kvp.Value.Price;               
+
+            //            //purchaseMenu.ItemChoiceDisplayMessage(kvp.Value.ProductType, kvp.Value.Name, kvp.Value.Price, Balance);
+            //            AuditLogPurchaseMethod(kvp.Value.Name, kvp.Key, RunningBalanceMethod(kvp.Value.Price), Balance);
+            //            return kvp.Value;
+
+            //            //Take them back to the purchase menu
+            //            //return MenuOptionResult.WaitAfterMenuSelection; ORIGINAL CHANGE BACK
+            //        }
+            //        else if (Balance < kvp.Value.Price)
+            //        {
+            //            throw new Exception(INSUFFICIENT_FUNDS_MESSAGE);
+            //            //purchaseMenu.InsufficientFundsMessage();
+            //        }
+            //        else if (kvp.Value.StockCount == 0)
+            //        {
+
+            //            throw new Exception(OUT_OF_STOCK_MESSAGE);
+            //            //purchaseMenu.NotEnoughStock();
+            //                //return MenuOptionResult.WaitAfterMenuSelection; ORIGINAL CHANGE BACK
+
+            //        }
+            //        return null;
+            //    }              
+            //}
             return null;
             // TODO check if this is a thing delete potentially ErrorWrongChoiceMethod(userCodeEntered);           
             //return MenuOptionResult.WaitAfterMenuSelection; ORIGINAL CHANGE BACK
         }
 
-        public void ReadFile()
+        public List<string> ReadFileNew()
+        {
+            using (StreamReader reader = new StreamReader(@"C:\Users\Student\git\c-module-1-capstone-team-2\19_Capstone\vendingmachine.csv"))
+            {
+                while (!reader.EndOfStream)
+                {
+                    string inventoryLine = reader.ReadLine(); // Reads every line and assigns the whole line to the string
+
+                    string[] lineSplit = inventoryLine.Split("|");// splits the string into an array. 
+
+                    string productName = lineSplit[1];
+                    decimal itemPrice = decimal.Parse(lineSplit[2]);
+                    string slotId = lineSplit[0];
+                    string productType = lineSplit[3];
+
+                    //VendingMachineItems item = new VendingMachineItems(productName, itemPrice, 5, slotId);
+                    VendingMachineItems item = new VendingMachineItems();
+
+
+                    item.Name = lineSplit[1];
+                    item.Price = decimal.Parse(lineSplit[2]);
+                    item.SlotId = lineSplit[0];
+                    item.ProductType = lineSplit[3];
+                    item.StockCount = 5;
+
+                    //(lineSplit[1], decimal.Parse(lineSplit[2]), 5, lineSplit[0], lineSplit[3])
+                    TotalInventoryDictionary.Add(lineSplit[0], item);
+                }
+                //read all the lines from the file, return them as a list of strings
+                return null;
+        }
+
+        public void RestockFromLines(List<string> fileLines)
+        {
+            foreach (string line in fileLines)
+            {
+
+                //add a new vendingMachine item with string.split("|")
+            }
+        }
+        
+        public void ReadFileOld()
+
         {
             using (StreamReader reader = new StreamReader(@"C:\Users\Student\git\c-module-1-capstone-team-2\19_Capstone\vendingmachine.csv"))
 
@@ -121,7 +192,7 @@ namespace Capstone
                     item.StockCount = 5;
 
                     //(lineSplit[1], decimal.Parse(lineSplit[2]), 5, lineSplit[0], lineSplit[3])
-                    TotalInventoryList.Add(lineSplit[0], item);
+                    TotalInventoryDictionary.Add(lineSplit[0], item);
 
 
                     //A1 | Potato Crisps | 3.05 | Chip
@@ -138,14 +209,14 @@ namespace Capstone
             string outPath = "../../../../Log.txt";
 
             using (StreamWriter writer = new StreamWriter(outPath, true))
-            {               
+            {
                 DateTime now = new DateTime();
                 writer.WriteLine($"{DateTime.Now} {action} {initialBalance} {runningBalance}");
 
             }
         }
 
-        public void AuditLogPurchaseMethod(string action,  string slotId, decimal currentBalance, decimal updatedBalance)
+        public void AuditLogPurchaseMethod(string action, string slotId, decimal currentBalance, decimal updatedBalance)
         {
             string outPath = "../../../../Log.txt";
 

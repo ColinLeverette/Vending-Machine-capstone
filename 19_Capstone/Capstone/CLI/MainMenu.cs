@@ -49,7 +49,7 @@ namespace Capstone.CLI
         //string name, decimal price, int stockCount, string slotId
         public MenuOptionResult DisplayItems()
         {
-            foreach (KeyValuePair<string, VendingMachineItems> kvp in ourVendingMachine.TotalInventoryList)
+            foreach (KeyValuePair<string, VendingMachineItems> kvp in ourVendingMachine.TotalInventoryDictionary)
             {
                 Console.WriteLine($"{kvp.Key} {kvp.Value.ProductType}     Remaining Quantity:   {kvp.Value.StockCount} \t {kvp.Value.Name} ${kvp.Value.Price} ");// This is where we left off!                   
             }
